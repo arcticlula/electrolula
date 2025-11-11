@@ -1,0 +1,1 @@
+let n=[];const s=new WeakMap;function t(){n.forEach(e=>e(...s.get(e))),n=[]}function o(e,...a){s.set(e,a),!n.includes(e)&&n.push(e)===1&&requestAnimationFrame(t)}const r=typeof window<"u";export{o as b,r as i};
