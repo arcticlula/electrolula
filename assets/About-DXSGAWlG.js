@@ -1,0 +1,6 @@
+import{E as u,r,e as g,m as i,s as b,x as s,be as m,T as _}from"./index-C8lXdkzK.js";const $={class:"content-slot"},v=`
+  repeating-linear-gradient(22.5deg, transparent, transparent 2px, rgba(16, 185, 129, 0.18) 2px, rgba(16, 185, 129, 0.18) 3px, transparent 3px, transparent 8px),
+  repeating-linear-gradient(67.5deg, transparent, transparent 2px, rgba(245, 101, 101, 0.10) 2px, rgba(245, 101, 101, 0.10) 3px, transparent 3px, transparent 8px),
+  repeating-linear-gradient(112.5deg, transparent, transparent 2px, rgba(234, 179, 8, 0.08) 2px, rgba(234, 179, 8, 0.08) 3px, transparent 3px, transparent 8px),
+  repeating-linear-gradient(157.5deg, transparent, transparent 2px, rgba(249, 115, 22, 0.06) 2px, rgba(249, 115, 22, 0.06) 3px, transparent 3px, transparent 8px)
+`,f={__name:"About",setup(k){const t=r(0),n=r(0);function p(a){t.value=a.clientX,n.value=a.clientY}const o=g(()=>{const a=t.value,e=n.value,c=`${a/-20}px ${e/30}px`,x=`${a/15}px ${e/-25}px`,l=`${a/-10}px ${e/15}px`,d=`${a/25}px ${e/-10}px`;return{backgroundImage:v,backgroundPosition:`${c}, ${x}, ${l}, ${d}`}});return(a,e)=>(b(),i("div",{class:"layout-wrapper",onMousemove:p},[s("div",{class:"pattern-background",style:m(o.value)},null,4),s("div",$,[_(a.$slots,"default",{},void 0,!0)])],32))}},B=u(f,[["__scopeId","data-v-499d0658"]]);export{B as default};
