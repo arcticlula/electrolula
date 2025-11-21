@@ -1,6 +1,7 @@
 export interface IMedia {
   type: 'image' | 'video';
   src: string;
+  description?: string;
   poster?: string;
 }
 

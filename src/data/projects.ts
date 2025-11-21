@@ -25,10 +25,10 @@ export const projectData: Project[] = [
   {
     name: 'Netscore',
     date: '2024-10-01',
-    keywords: ['Hardware','Software','',''],
+    keywords: ['Hardware','Software'],
     description: "A real-time, dual-sided scoreboard system that uses external Bluetooth buttons for control and score updates.",
     status: 'Ongoing',
-    src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
+    src: 'netscore/images/PXL_20250301_000104064.jpg',
     srcType: 'image',
     routeName: 'netscore'
   }
