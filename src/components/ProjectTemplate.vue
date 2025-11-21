@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { IMedia, IObjectMedia, ICascadeCategory } from '../models/media';
+import { IMedia, ICascadeCategory } from '../models/media';
 import { formatMonthYear } from '../utils/date';
 import MediaCarousel from './MediaCarousel.vue';
 import ModelViewer from './ModelViewer.vue';
@@ -96,7 +96,7 @@ const statusType = computed(() => {
 .carousel-wrapper
   display: flex
   justify-content: center
-  margin: 24px 0
+  margin-top: 24px
 
 @media (max-width: 800px)
   .project-view
