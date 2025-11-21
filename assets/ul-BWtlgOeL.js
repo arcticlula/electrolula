@@ -1,4 +1,4 @@
-import{Z as h,$ as o,a9 as m,d as f,h as p,u as v,a as l,e as C,a8 as z,aw as _}from"./index-KM-T22Ti.js";const q=h("blockquote",`
+import{Z as h,$ as o,a9 as m,d as f,h as p,u as v,a as l,e as C,a8 as z,aw as _}from"./index-fL56cton.js";const q=h("blockquote",`
  font-size: var(--n-font-size);
  line-height: var(--n-line-height);
  margin: 0;
