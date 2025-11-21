@@ -1,6 +1,6 @@
 <template>
   <div class="project-view">
-    <n-h1>Simple Monophonic FM Transmitter</n-h1>
+    <n-h1>Simple Monophonic FM </n-h1>
     <n-p><strong>June 2013</strong></n-p>
     <n-blockquote>
       A simple, battery-powered monophonic FM transmitter built "deadbug-style" 
@@ -65,9 +65,7 @@
     'https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel4.jpeg',
   ]);
 
-  function gg() {
-    console.log('gg')
-  }
+
 </script>
 
 <style scoped lang="sass">
@@ -84,5 +82,9 @@
   display: flex
   justify-content: center
   margin: 24px 0
+
+@media (max-width: 800px)
+  .project-view
+    padding: 0 4px !important
 
 </style>

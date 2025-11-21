@@ -12,6 +12,7 @@ export interface IObjectMedia {
 
 export interface IObjectMediaSrc {
   src: string;
+  mtl?: string;
   name?: string;
   colorHex?: string;
   opacity?: number;

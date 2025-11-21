@@ -269,23 +269,43 @@ const media = ref<IMedia[]>([
       obj: [ {
         name: 'Handle',
         src: 'netscore/models/assembly/v1.0/assembly-handle-v1.0.stl',
-        colorHex: '0xff7f00'
+        colorHex: '0xf9e1a8'
       },
       {
         name: 'Top',
         src: 'netscore/models/assembly/v1.0/assembly-top-v1.0.stl',
-        colorHex: '0xff7f00'
+        colorHex: '0xffdab4'
       },
       {
         name: 'Button',
         src: 'netscore/models/assembly/v1.0/assembly-btn-v1.0.stl',
-        colorHex: '0x00ff00'
+        colorHex: '0xd6e5bd'
       },
       {
         name: 'Bottom',
         src: 'netscore/models/assembly/v1.0/assembly-bottom-v1.0.stl',
-        colorHex: '0xff7f00'
-      }]
+        colorHex: '0xffdab4'
+      },
+      {
+        name: 'Body - front',
+        src: 'netscore/models/assembly/v1.0/assembly-inner-body-front-v1.0.stl',
+        colorHex: '0xbcd8ec'
+      },
+      {
+        name: 'Body - back',
+        src: 'netscore/models/assembly/v1.0/assembly-inner-body-back-v1.0.stl',
+        colorHex: '0xbcd8ec'
+      },
+      {
+        name: 'Body - union',
+        src: 'netscore/models/assembly/v1.0/assembly-inner-body-union-v1.0.stl',
+        colorHex: '0xdcccec'
+      },
+      {
+        name: 'Body - spacer',
+        src: 'netscore/models/assembly/v1.0/assembly-inner-body-spacer-v1.0.stl',
+        colorHex: '0xf9e1a8'
+    }]
     }
   ]);
 </script>

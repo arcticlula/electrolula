@@ -67,9 +67,33 @@ const routes: Array<RouteRecordRaw> = [
         meta: { background: 'black' }
       },
       {
-        path: 'openSCAD',
-        name: 'openSCAD',
-        component: () => import("../views/projects/OpenSCAD.vue"),
+        path: 'comando-rita',
+        name: 'comando-rita',
+        component: () => import("../views/projects/ComandoRita.vue"),
+        meta: { background: 'black' }
+      },
+      {
+        path: 'home-openscad',
+        name: 'home-openscad',
+        component: () => import("../views/projects/HomeOpenSCAD.vue"),
+        meta: { background: 'black' }
+      },
+      {
+        path: 'plant-sniffer',
+        name: 'plant-sniffer',
+        component: () => import("../views/projects/PlantSniffer.vue"),
+        meta: { background: 'black' }
+      },
+      {
+        path: 'foosball-goal-counter',
+        name: 'foosball-goal-counter',
+        component: () => import("../views/projects/FoosballGoalCounter.vue"),
+        meta: { background: 'black' }
+      },
+      {
+        path: 'ian',
+        name: 'ian',
+        component: () => import("../views/projects/Ian.vue"),
         meta: { background: 'black' }
       }
     ],

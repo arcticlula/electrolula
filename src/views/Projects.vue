@@ -24,12 +24,22 @@
           <template #header>
             <div class="card-header">
               <span class="card-title">{{ project.name }}</span>
-              <span class="card-date">{{ project.date }}</span>
+              <span class="card-date">{{  formatMonthYear(project.date) }}</span>
             </div>
           </template>
           <template #cover>
             <router-link :to="{ name: project.routeName }">
-              <img class="card-image" :src="project.image">
+              <img v-if="project.srcType === 'image'" class="card-image" :src="project.src">
+              <video
+                v-else-if="project.srcType === 'video'"
+                class="card-video"
+                :src="project.src"
+                autoplay
+                loop
+                muted
+                playsinline
+                preload="auto"
+              />
             </router-link>
           </template>
           <div class="card-content">
@@ -39,6 +49,7 @@
             <n-space>
               <n-tag
                 v-for="keyword in project.keywords"
+                size="small"
                 :key="keyword"
                 class="keyword-tag"
                 :type="activeTags.includes(keyword) ? 'info' : 'success'"
@@ -58,74 +69,12 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue';
 
+  import { formatMonthYear } from '../utils/date';
+  import { projectData, Project } from '../data/projects';
+
   const activeTags = ref<string[]>([]);
 
-  const projects = ref([
-    {
-      name: 'FM Transmitter',
-      date: 'June 2013',
-      keywords: ['Hardware', 'Analog', 'Audio', 'RF', 'Deadbug'],
-      description: 'A simple, battery-powered monophonic FM transmitter built "deadbug-style" with discrete components, designed to broadcast audio from a device like a mp3 player to any standard FM radio receiver.',
-      image: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-      routeName: 'fm-transmitter'
-    },
-    {
-      name: 'Mondays',
-      date: 'March 2020',
-      keywords: ['Software', 'Soccer', 'Web App'],
-      description: 'An app to record and analyze stats for our weekly soccer games, including goals, assists, wins, and personalized user results.',
-      image: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-      routeName: 'mondays'
-    },
-    {
-      name: 'What The Fuzz!',
-      date: 'December 2015',
-      keywords: ['Hardware', 'Analog', 'Guitar', 'Pedal', 'Audio', 'Perfboard'],
-      description: 'A handmade fuzz and distortion guitar pedal built from scratch on perfboard, featuring switchable diode clipping options for a wide range of tones.',
-      image: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-      routeName: 'what-the-fuzz'
-    },
-    {
-      name: 'Things',
-      date: '2024',
-      keywords: ['Software', 'Inventory', 'Web App'],
-      description: "A web app to create a personal digital inventory of items/parts in storage boxes, drawers, and cabinets, making it easy to find where things are.",
-      image: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-      routeName: 'things'
-    },
-        {
-      name: 'Dumbledoor',
-      date: '2025',
-      keywords: ['Software', 'Inventory', 'Web App'],
-      description: "A not-too-invasive hardware hack that adds smart capabilities, like keyless entry, to a traditional apartment intercom system.",
-      image: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-      routeName: 'dumb-le-door'
-    },
-        {
-      name: 'Mood Light',
-      date: 'September 2025',
-      keywords: ['Hardware', 'Software', 'Lighting', 'Web App'],
-      description: "A diffused ambient light built from repurposed materials, controlled directly from any modern web browser using the Web Bluetooth API.",
-      image: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-      routeName: 'mood-light'
-    },
-    {
-      name: 'Netscore',
-      date: 'October 2024',
-      keywords: ['Software', 'Inventory', 'Web App'],
-      description: "A real-time, dual-sided scoreboard system that uses external Bluetooth buttons for score updates, built around a ESP32-S2 and ESP32 microcontroller pair.",
-      image: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-      routeName: 'netscore'
-    },
-    {
-      name: 'Goalie Rotation Timer',
-      date: '2022',
-      keywords: ['Software', 'Inventory', 'Web App'],
-      description:"A portable, ESP32-based timer with a display and buzzer, prototyped to automate goalie rotation intervals during soccer games.",
-      image: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg',
-      routeName: 'goalie-rotation-timer'
-    }
-  ])
+  const projects = ref<Project[]>(projectData);
   
   const sortedProjects = computed(() => {
     return [...projects.value].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -179,7 +128,13 @@ a
 
 .card-image
   width: 100%
-  height: 200px
+  height: 300px
+  object-fit: cover
+  cursor: pointer
+
+.card-video
+  width: 100%
+  height: 300px
   object-fit: cover
   cursor: pointer
 

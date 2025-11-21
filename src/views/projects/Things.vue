@@ -65,9 +65,7 @@
     'https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel4.jpeg',
   ]);
 
-  function gg() {
-    console.log('gg')
-  }
+
 </script>
 
 <style scoped lang="sass">

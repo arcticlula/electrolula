@@ -23,5 +23,6 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['three']
-  }
+  },
+  base: "/electrolula/"
 })

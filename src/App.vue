@@ -10,7 +10,6 @@
     <div
       class="background-layer"
       :style="dynamicBackgroundStyle"
-      :key="route.name"
     />
 
     <div class="content-wrapper">
@@ -57,7 +56,7 @@ const crosshatchBackground = `
 `
 
 const backgroundDefinitions = {
-  cv: (x: number, y: number) => ({
+  cv: () => ({
     backgroundImage: cvBackground,
     backgroundColor: 'black',
     backgroundSize: 'auto',
@@ -79,7 +78,7 @@ const backgroundDefinitions = {
     }
   },
 
-  black: (x: number, y: number) => ({
+  black: () => ({
     backgroundColor: 'black',
     transition: 'none',
   }),
@@ -123,4 +122,13 @@ watch(() => route.name, () => {
   padding: 16px
   > *
     margin: 0 16px
+
+@media (max-width: 800px)
+  .body
+    margin: 8px 16px
+  .header
+    padding: 8px 0 !important
+    > *
+      margin: 0 12px
+
 </style>

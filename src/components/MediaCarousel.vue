@@ -1,6 +1,6 @@
 <template>
   <n-image-group>
-    <n-carousel class="carousel" :show-arrow="true">
+    <n-carousel class="carousel" :show-arrow="!isMobile">
       <template v-for="(item, index) in media" :key="index">
         <n-image
           v-if="item.type === 'image'"
@@ -28,7 +28,10 @@
 </template>
 
 <script setup lang="ts">
+import { useMobileDetection } from '../composables/useMobileDetection';
 import { IMedia } from '../models/media';
+
+const { isMobile } = useMobileDetection();
 
 defineProps<{ media: IMedia[] }>()
 </script>
@@ -40,7 +43,7 @@ defineProps<{ media: IMedia[] }>()
   height: 400px
   background-color: #000
 
-.carousel ::v-deep .n-carousel__arrow-group
+.carousel :deep(.n-carousel__arrow-group)
   position: absolute
   right: calc(50% - 34px)
 
