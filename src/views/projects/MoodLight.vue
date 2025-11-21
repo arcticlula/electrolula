@@ -1,6 +1,6 @@
 <template>
   <ProjectTemplate id="mood-light" :media="media" :models="models">
-    <n-p><strong>The Story</strong></n-p>
+    <n-p class="squid-semi-title">The Story</n-p>
     <n-p>
       This project was born from a happy accident. I had some leftover WS2811 LED strips from my <router-link :to="{ name: 'ian' }"><n-a>thesis project</n-a></router-link> 
       and a few plexiglass samples that I had originally ordered for the <router-link :to="{ name: 'netscore' }"><n-a>NetScore</n-a></router-link> project - I thought they'd be clear display protectors, 
@@ -10,36 +10,36 @@
       The light is powered by an ESP32-C3, and the LEDs are controlled wirelessly via a web app using the Web Bluetooth API, 
       allowing you to connect and change colors on the fly from a browser.
     </n-p>
-    <n-p><strong>Key Features</strong></n-p>
+    <n-p class="squid-semi-title">Key Features</n-p>
     <n-ul>
-      <n-li><strong>Soft, Diffused Lighting:</strong> Uses a WS2811 LED strip paired with a translucent plexiglass panel for a smooth, ambient glow.</n-li>
-      <n-li><strong>Custom Enclosure:</strong> The frame was parametrically designed in Onshape.</n-li>
-      <n-li><strong>Browser-Based Control:</strong> Wirelessly change colors and patterns using the Web Bluetooth API—no native app required.</n-li>
-      <n-li><strong>Repurposed Components:</strong> Built from leftover materials from previous projects.</n-li>
+      <n-li>Soft, Diffused Lighting: <span class="squid-text-alt">Uses a WS2811 LED strip paired with a translucent plexiglass panel for a smooth, ambient glow.</span></n-li>
+      <n-li>Custom Enclosure: <span class="squid-text-alt">The frame was parametrically designed in Onshape.</span></n-li>
+      <n-li>Browser-Based Control: <span class="squid-text-alt">Wirelessly change colors and patterns using the Web Bluetooth API—no native app required.</span></n-li>
+      <n-li>Repurposed Components: <span class="squid-text-alt">Built from leftover materials from previous projects.</span></n-li>
     </n-ul>
-    <n-p><strong>Tech Stack</strong></n-p>
+    <n-p class="squid-semi-title">Tech Stack</n-p>
     <n-ul>
-      <n-li><strong>Hardware:</strong> ESP32-C3, WS2811 individually addressable LED strip.</n-li>
-      <n-li><strong>Software:</strong></n-li>
+      <n-li>Hardware: <span class="squid-text-alt">ESP32-C3, WS2811 individually addressable LED strip.</span></n-li>
+      <n-li>Software:</n-li>
       <n-ul>
-        <n-li> Custom firmware written in C/C++ using the Arduino framework.</n-li>
-        <n-li> As for the web app it was built with Vue.js and TypeScript.</n-li> 
+        <n-li><span class="squid-text-alt">Custom firmware written in C/C++ using the Arduino framework.</span></n-li>
+        <n-li><span class="squid-text-alt">As for the web app it was built with Vue.js and TypeScript.</span></n-li> 
       </n-ul>
-      <n-li><strong>Control Protocol:</strong> BLE / Web Bluetooth API.</n-li>
-      <n-li><strong>3D Design:</strong> Onshape.</n-li>
-      <n-li><strong>Circuit Board Technique:</strong> Perfboard for now.</n-li>
+      <n-li>Control Protocol: <span class="squid-text-alt">BLE / Web Bluetooth API.</span></n-li>
+      <n-li>3D Design: <span class="squid-text-alt">Onshape.</span></n-li>
+      <n-li>Circuit Board Technique: <span class="squid-text-alt">Perfboard for now.</span></n-li>
     </n-ul>
-    <n-p><strong>Challenges & Lessons Learned</strong></n-p>
+    <n-p class="squid-semi-title">Challenges & Lessons Learned</n-p>
     <n-p>
       The primary lesson from this project was the value of creative repurposing and "happy accidents." 
       The translucent plexiglass, initially a purchasing mistake for another project, became the key component that defined the aesthetic and also the driving force in this project's creation. 
       It's a good reminder that sometimes the best ideas come from adapting to unexpected materials and finding potential in leftovers.
     </n-p>
-    <n-p><strong>Links</strong></n-p>
+    <n-p class="squid-semi-title">Links</n-p>
     <n-ul>
-      <n-li><n-a href="toDo">GitHub Repository</n-a></n-li>
-      <n-li><n-a href="toDo">Web App</n-a></n-li>
-      <n-li><n-a href="https://cad.onshape.com/documents/ffe826fd84c7b0b803a26dcf/w/2289f860d06ea32193ad4090/e/bda82098034db4c28fba08ea?renderMode=0&uiState=691cc052b1846ac8b07025d5">Onshape</n-a></n-li>
+      <n-li><n-a href="toDo">[GitHub Repository]</n-a></n-li>
+      <n-li><n-a href="toDo">[Web App]</n-a></n-li>
+      <n-li><n-a href="https://cad.onshape.com/documents/ffe826fd84c7b0b803a26dcf/w/2289f860d06ea32193ad4090/e/bda82098034db4c28fba08ea?renderMode=0&uiState=691cc052b1846ac8b07025d5">[Onshape]</n-a></n-li>
     </n-ul>
   </ProjectTemplate>
 </template>
@@ -53,21 +53,23 @@ import { IMedia, ICascadeCategory } from '../../models/media';
 const media = ref<IMedia[]>([
   {
     type: 'video',
-    src: 'mood-light/videos/PXL_20250911_232403363.mp4',
-    poster: 'mood-light/images/PXL_20250911_102431507.jpg',
+    src: 'mood-light/videos/PXL_20250908_162742176.mp4',
+    description: 'first test with a simple holder'
   },
   {
     type: 'video',
-    src: 'mood-light/videos/PXL_20250908_162742176.mp4',
-    poster: 'mood-light/images/PXL_20250908_162742176.jpg',
+    src: 'mood-light/videos/PXL_20250911_232403363.mp4',
+    description: 'test with the whole enclosure and different plexiglass'
   },
   {
     type: 'image',
-    src: 'mood-light/images/PXL_20250910_130605116.jpg'
+    src: 'mood-light/images/PXL_20250910_130605116.jpg',
+    description: 'WS2811 12V strip'
   },
   {
     type: 'image',
-    src: 'mood-light/images/PXL_20250911_102415897.jpg'
+    src: 'mood-light/images/PXL_20250911_102415897.jpg',
+    description: 'first enclosure revisions'
   },
   {
     type: 'image',
@@ -75,7 +77,8 @@ const media = ref<IMedia[]>([
   },
   {
     type: 'image',
-    src: 'mood-light/images/PXL_20250911_112415716.jpg'
+    src: 'mood-light/images/PXL_20250911_112415716.jpg',
+    description: 'good fit but a pain to assemble'
   }
 ]);
 

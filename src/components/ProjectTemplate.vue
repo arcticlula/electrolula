@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <n-h1>{{ name }}</n-h1>
     <div class="subtitle">
-      <n-p><strong>{{ formattedDate }}</strong></n-p>
+      <n-p class="squid-highlight">{{ formattedDate }}</n-p>
       <n-tag size="small" :type="statusType" :bordered="false">
         {{ status }}
       </n-tag>
@@ -24,7 +24,7 @@
     
     <!-- 3D Model Viewer -->
     <template v-if="models && models.length > 0">
-      <n-p><strong>3D Model Viewer</strong></n-p>
+      <n-p>3D Model Viewer</n-p>
       <div>
         <ModelViewer
           ref="viewer"
