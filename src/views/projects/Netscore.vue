@@ -42,7 +42,7 @@
 import { ref } from 'vue';
 
 import ProjectTemplate from '../../components/ProjectTemplate.vue';
-import { IMedia, IObjectMedia } from '../../models/media';
+import { IMedia, ICascadeCategory } from '../../models/media';
 
 const media = ref<IMedia[]>([
   {
@@ -121,191 +121,305 @@ const media = ref<IMedia[]>([
   }
 ]);
 
-  const models = ref<IObjectMedia[]>([
+  const models = ref<ICascadeCategory[]>([
     {
-      name: 'PCB - Display Board',
-      obj: [ 
-      {
-        name: '1.0',
-        src: 'netscore/models/pcb/display-board-v1.0.wrl',
-      }, 
-      {
-        name: '1.2',
-        src: 'netscore/models/pcb/display-board-v1.2.wrl',
-      }]
+      key: 'pcb',
+      label: 'PCB',
+      children: [
+        {
+          key: 'display-board',
+          label: 'Display Board',
+          children: [
+            {
+              key: 'display-board-v1.0',
+              label: '1.0',
+              src: 'netscore/models/pcb/display-board-v1.0.wrl'
+            },
+            {
+              key: 'display-board-v1.2',
+              label: '1.2',
+              src: 'netscore/models/pcb/display-board-v1.2.wrl'
+            }
+          ]
+        },
+        {
+          key: 'main-board',
+          label: 'Main Board',
+          children: [
+            {
+              key: 'main-board-v1.0',
+              label: '1.0',
+              src: 'netscore/models/pcb/main-board-v1.0.wrl'
+            }
+          ]
+        }
+      ]
     },
     {
-      name: 'PCB - Main Board',
-      obj: [ {
-        name: '1.0',
-        src: 'netscore/models/pcb/main-board-v1.0.wrl',
-      }]
+      key: 'inner',
+      label: 'Inner Structure',
+      children: [
+        {
+          key: 'inner-struct',
+          label: 'Body',
+          children: [
+            {
+              key: 'inner-struct-v0.1',
+              label: '0.1',
+              src: 'netscore/models/inner/inner-struct-v0.1.stl',
+              colorHex: '0xff7f00'
+            },
+            {
+              key: 'inner-struct-v0.2',
+              label: '0.2',
+              src: 'netscore/models/inner/inner-struct-v0.2.stl',
+              colorHex: '0xff7f00'
+            },
+            {
+              key: 'inner-struct-v0.5',
+              label: '0.5',
+              src: 'netscore/models/inner/inner-struct-v0.5.stl',
+              colorHex: '0xff7f00'
+            },
+            {
+              key: 'inner-struct-v1.0',
+              label: '1.0',
+              src: 'netscore/models/inner/inner-struct-v1.0.stl',
+              colorHex: '0xff7f00'
+            }
+          ]
+        },
+        {
+          key: 'inner-union',
+          label: 'Union',
+          children: [
+            {
+              key: 'inner-union-v1.0',
+              label: '1.0',
+              src: 'netscore/models/inner/inner-struct-union-v1.0.stl'
+            }
+          ]
+        }
+      ]
     },
     {
-      name: 'Inner Struct',
-      obj: [ {
-        name: '0.1',
-        src: 'netscore/models/inner/inner-struct-v0.1.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '0.2',
-        src: 'netscore/models/inner/inner-struct-v0.2.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '0.5',
-        src: 'netscore/models/inner/inner-struct-v0.5.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '1.0',
-        src: 'netscore/models/inner/inner-struct-v1.0.stl',
-        colorHex: '0xff7f00'
-      }]
+      key: 'outer',
+      label: 'Outer Shell',
+      children: [
+        {
+          key: 'handle',
+          label: 'Handle',
+          children: [
+            {
+              key: 'handle-v0.5',
+              label: 'v0.5',
+              src: 'netscore/models/outer/outer-handle-v0.5.stl',
+              colorHex: '0xff7f00'
+            },
+            {
+              key: 'handle-v1.0',
+              label: 'v1.0',
+              src: 'netscore/models/outer/outer-handle-v1.0.stl',
+              colorHex: '0xff7f00'
+            }
+          ]
+        },
+        {
+          key: 'top',
+          label: 'Top',
+          children: [
+            {
+              key: 'top-v0.5',
+              label: 'v0.5',
+              src: 'netscore/models/outer/outer-top-v0.5.stl',
+              colorHex: '0xff7f00'
+            },
+            {
+              key: 'top-v0.6',
+              label: 'v0.6',
+              src: 'netscore/models/outer/outer-top-v0.6.stl',
+              colorHex: '0xff7f00'
+            },
+            {
+              key: 'top-v1.0',
+              label: 'v1.0',
+              src: 'netscore/models/outer/outer-top-v1.0.stl',
+              colorHex: '0xff7f00'
+            }
+          ]
+        },
+        {
+          key: 'button',
+          label: 'Button',
+          children: [
+            {
+              key: 'button-v1.0',
+              label: 'v1.0',
+              src: 'netscore/models/outer/btn-v1.0.stl',
+              colorHex: '0x00ff00'
+            }
+          ]
+        },
+        {
+          key: 'middle',
+          label: 'Middle',
+          children: [
+            {
+              key: 'middle-v0.1',
+              label: 'v0.1',
+              src: 'netscore/models/outer/outer-middle-v0.1.stl',
+              colorHex: '0xff7f00'
+            }
+          ]
+        },
+        {
+          key: 'bottom',
+          label: 'Bottom',
+          children: [
+            {
+              key: 'bottom-v1.0',
+              label: 'v1.0',
+              src: 'netscore/models/outer/outer-bottom-v1.0.stl',
+              colorHex: '0xff7f00'
+            }
+          ]
+        },
+        {
+          key: 'spacer',
+          label: 'Spacer',
+          children: [
+            {
+              key: 'spacer-v0.5',
+              label: 'v0.5',
+              src: 'netscore/models/outer/spacer-v0.5.stl',
+              colorHex: '0x00ff00'
+            }
+          ]
+        }
+      ]
     },
     {
-      name: 'Union',
-      obj: [ {
-        name: '1.0',
-        src: 'netscore/models/inner/inner-struct-union-v1.0.stl',
-      }]
-    },
-    {
-      name: 'Handle',
-      obj: [ {
-        name: 'v0.5',
-        src: 'netscore/models/outer/outer-handle-v0.5.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'v1.0',
-        src: 'netscore/models/outer/outer-handle-v1.0.stl',
-        colorHex: '0xff7f00'
-      }]
-    },
-    {
-      name: 'Top',
-      obj: [ {
-        name: 'v0.5',
-        src: 'netscore/models/outer/outer-top-v0.5.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'v0.6',
-        src: 'netscore/models/outer/outer-top-v0.6.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'v1.0',
-        src: 'netscore/models/outer/outer-top-v1.0.stl',
-        colorHex: '0xff7f00'
-      }]
-    },
-    {
-      name: 'Button',
-      obj: {
-        name: 'v1.0',
-        src: 'netscore/models/outer/btn-v1.0.stl',
-        colorHex: '0x00ff00'
-      }
-    },
-    {
-      name: 'Middle',
-      obj: {
-        name: 'v0.1',
-        src: 'netscore/models/outer/outer-middle-v0.1.stl',
-        colorHex: '0xff7f00'
-      }
-    },
-    {
-      name: 'Bottom',
-      obj: {
-        name: 'v1.0',
-        src: 'netscore/models/outer/outer-bottom-v1.0.stl',
-        colorHex: '0xff7f00'
-      }
-    },
-    {
-      name: 'Spacer',
-      obj: {
-        name: 'v0.5',
-        src: 'netscore/models/outer/spacer-v0.5.stl',
-        colorHex: '0x00ff00'
-      }
-    },
-    {
-      name: 'Assembly - Prototype',
-      isGroup: true,
-      obj: [ {
-        name: 'Handle',
-        src: 'netscore/models/assembly/prototype/assembly-handle-v0.99.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'Top',
-        src: 'netscore/models/assembly/prototype/assembly-top-v0.99.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'Button',
-        src: 'netscore/models/assembly/prototype/assembly-btn-v0.99.stl',
-        colorHex: '0x00ff00'
-      },
-      {
-        name: 'Middle',
-        src: 'netscore/models/assembly/prototype/assembly-middle-v0.99.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'Bottom',
-        src: 'netscore/models/assembly/prototype/assembly-bottom-v0.99.stl',
-        colorHex: '0xff7f00'
-      }]
-    },
-    {
-      name: 'Assembly - v1.0',
-      isGroup: true,
-      obj: [ {
-        name: 'Handle',
-        src: 'netscore/models/assembly/v1.0/assembly-handle-v1.0.stl',
-        colorHex: '0xf9e1a8'
-      },
-      {
-        name: 'Top',
-        src: 'netscore/models/assembly/v1.0/assembly-top-v1.0.stl',
-        colorHex: '0xffdab4'
-      },
-      {
-        name: 'Button',
-        src: 'netscore/models/assembly/v1.0/assembly-btn-v1.0.stl',
-        colorHex: '0xd6e5bd'
-      },
-      {
-        name: 'Bottom',
-        src: 'netscore/models/assembly/v1.0/assembly-bottom-v1.0.stl',
-        colorHex: '0xffdab4'
-      },
-      {
-        name: 'Body - front',
-        src: 'netscore/models/assembly/v1.0/assembly-inner-body-front-v1.0.stl',
-        colorHex: '0xbcd8ec'
-      },
-      {
-        name: 'Body - back',
-        src: 'netscore/models/assembly/v1.0/assembly-inner-body-back-v1.0.stl',
-        colorHex: '0xbcd8ec'
-      },
-      {
-        name: 'Body - union',
-        src: 'netscore/models/assembly/v1.0/assembly-inner-body-union-v1.0.stl',
-        colorHex: '0xdcccec'
-      },
-      {
-        name: 'Body - spacer',
-        src: 'netscore/models/assembly/v1.0/assembly-inner-body-spacer-v1.0.stl',
-        colorHex: '0xf9e1a8'
-    }]
+      key: 'assembly',
+      label: 'Assembly',
+      children: [
+        {
+          key: 'assembly-prototype',
+          label: 'Prototype',
+          children: [
+            {
+              key: 'assembly-prototype-v0.99',
+              label: 'v0.99',
+              isGroup: true,
+              children: [
+                {
+                  key: 'proto-handle',
+                  label: 'Handle',
+                  src: 'netscore/models/assembly/prototype/assembly-handle-v0.99.stl',
+                  colorHex: '0xff7f00',
+                  explodeOffset: {x: 0, y: 0, z: 20}
+                },
+                {
+                  key: 'proto-top',
+                  label: 'Top',
+                  src: 'netscore/models/assembly/prototype/assembly-top-v0.99.stl',
+                  colorHex: '0xff7f00',
+                  explodeOffset: {x: 0, y: 0, z: 10}
+                },
+                {
+                  key: 'proto-button',
+                  label: 'Button',
+                  src: 'netscore/models/assembly/prototype/assembly-btn-v0.99.stl',
+                  colorHex: '0x00ff00',
+                  explodeOffset: {x: 0, y: 0, z: 15}
+                },
+                {
+                  key: 'proto-middle',
+                  label: 'Middle',
+                  src: 'netscore/models/assembly/prototype/assembly-middle-v0.99.stl',
+                  colorHex: '0xff7f00',
+                  explodeOffset: {x: 0, y: 0, z: 0}
+                },
+                {
+                  key: 'proto-bottom',
+                  label: 'Bottom',
+                  src: 'netscore/models/assembly/prototype/assembly-bottom-v0.99.stl',
+                  colorHex: '0xff7f00',
+                  explodeOffset: {x: 0, y: 0, z: -10}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          key: 'assembly-v1.0',
+          label: 'v1.0',
+          children: [
+            {
+              key: 'assembly-v1.0-full',
+              label: 'Full Assembly',
+              isGroup: true,
+              children: [
+                {
+                  key: 'v1.0-handle',
+                  label: 'Handle',
+                  src: 'netscore/models/assembly/v1.0/assembly-handle-v1.0.stl',
+                  colorHex: '0xf9e1a8',
+                  explodeOffset: {x: 0, y: 0, z: 20}
+                },
+                {
+                  key: 'v1.0-top',
+                  label: 'Top',
+                  src: 'netscore/models/assembly/v1.0/assembly-top-v1.0.stl',
+                  colorHex: '0xffdab4',
+                  explodeOffset: {x: 0, y: 0, z: 10}
+                },
+                {
+                  key: 'v1.0-button',
+                  label: 'Button',
+                  src: 'netscore/models/assembly/v1.0/assembly-btn-v1.0.stl',
+                  colorHex: '0xd6e5bd',
+                  explodeOffset: {x: 0, y: 0, z: 15}
+                },
+                {
+                  key: 'v1.0-bottom',
+                  label: 'Bottom',
+                  src: 'netscore/models/assembly/v1.0/assembly-bottom-v1.0.stl',
+                  colorHex: '0xffdab4',
+                  explodeOffset: {x: 0, y: 0, z: -15}
+                },
+                {
+                  key: 'v1.0-body-front',
+                  label: 'Body - front',
+                  src: 'netscore/models/assembly/v1.0/assembly-inner-body-front-v1.0.stl',
+                  colorHex: '0xbcd8ec',
+                  explodeOffset: {x: 0, y: -10, z: 0}
+                },
+                {
+                  key: 'v1.0-body-back',
+                  label: 'Body - back',
+                  src: 'netscore/models/assembly/v1.0/assembly-inner-body-back-v1.0.stl',
+                  colorHex: '0xbcd8ec',
+                  explodeOffset: {x: 0, y: 10, z: 0}
+                },
+                {
+                  key: 'v1.0-body-union',
+                  label: 'Body - union',
+                  src: 'netscore/models/assembly/v1.0/assembly-inner-body-union-v1.0.stl',
+                  colorHex: '0xdcccec',
+                  explodeOffset: {x: 0, y: 0, z: -4}
+                },
+                {
+                  key: 'v1.0-body-spacer',
+                  label: 'Body - spacer',
+                  src: 'netscore/models/assembly/v1.0/assembly-inner-body-spacer-v1.0.stl',
+                  colorHex: '0xf9e1a8',
+                  explodeOffset: {x: 0, y: 0, z: 3}
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]);
 </script>

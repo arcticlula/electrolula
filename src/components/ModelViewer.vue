@@ -1,8 +1,8 @@
 <template class="stl-viewer">
   <div class="options-div">
     <div class="select-div">
-      <n-select class="select-model" v-model:value="selectedModelName" :options="options" />
-      <n-button class="select-button" @click="toggleExplode" tertiary v-if="currentModel && currentModel.isGroup">
+      <n-cascader class="select-model" v-model:value="cascaderValue" :options="cascadeOptions" :show-path="true" check-strategy="child"/>
+      <n-button class="select-button" @click="toggleExplode" tertiary v-if="selectedVersionIsGroup">
         <template #icon>
           <n-icon>
             <ArrowMoveInward20Regular v-if="isExploded" />
@@ -10,27 +10,28 @@
           </n-icon>
         </template>
       </n-button>
-    </div>
-    <div class="checkbox-list" v-if="currentModel && currentModel.isGroup">
+      </div>
+      <div class="radio-list" v-if="versionOptions.length > 0 && !selectedVersionIsGroup">
+        <label class="label"><strong>Version:</strong></label>
+        <n-radio-group v-model:value="selectedVersionSrc" >
+          <div class="radio-grid">
+              <n-radio v-for="version in versionOptions" :key="version.value" :value="version.value">
+                {{ version.label }}
+              </n-radio>
+          </div>
+        </n-radio-group>
+      </div>
+      <div class="checkbox-list" v-if="selectedVersionIsGroup">
       <label class="label"><strong>Parts:</strong></label>
       <n-checkbox-group v-model:value="visibleParts" >
         <div class="checkbox-grid">
-          <n-checkbox v-for="part in (currentModel.obj as IObjectMediaSrc[])" :key="part.src" :value="part.src">
-            {{ part.name ?? 'Unnamed Part' }}
-          </n-checkbox>
+            <n-checkbox v-for="part in currentVersionChildren" :key="part.src" :value="part.src">
+              {{ (part as any).name ?? (part as any).label ?? 'Unnamed Part' }}
+            </n-checkbox>
         </div>
       </n-checkbox-group>
     </div>
-    <div class="radio-list" v-if="currentModel && !currentModel.isGroup && Array.isArray(currentModel.obj)">
-      <label class="label"><strong>Version:</strong></label>
-      <n-radio-group v-model:value="selectedVersionSrc" >
-        <div class="radio-grid">
-            <n-radio v-for="part in (currentModel.obj as IObjectMediaSrc[])" :key="part.src" :value="part.src">
-              {{ part.name ?? '???' }}
-            </n-radio>
-        </div>
-      </n-radio-group>
-     </div>
+    
   </div>
   <div ref="viewerContainer" class="viewer"></div>
 </template>
@@ -43,9 +44,9 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { VRMLLoader } from "three/examples/jsm/loaders/VRMLLoader.js";
 import { computed, onMounted, ref, watch } from 'vue';
 
-import { IObjectMedia, IObjectMediaSrc } from '../models/media';
+import { IModel, ICascadeCategory } from '../models/media';
 
-const props = defineProps<{ models: IObjectMedia[], backgroundColor: number }>();
+const props = defineProps<{ models: ICascadeCategory[], backgroundColor?: number }>();
 
 const viewerContainer = ref<HTMLDivElement | null>(null);
 
@@ -58,7 +59,10 @@ let currentGroup: THREE.Group | null = null;
 const stlLoader = new STLLoader();
 const vrmlLoader = new VRMLLoader();
 
-const selectedModelName = ref<string | null>(null);
+const selectedPath = ref<string[] | null>(null);
+const previousSelectedPath = ref<string[] | null>(null);
+const cascaderValue = ref<string | null>(null);
+
 const visibleParts = ref<string[]>([]);
 const selectedVersionSrc = ref<string | null>(null);
 
@@ -66,87 +70,245 @@ let currentModuleName: string | null = null;
 const isExploded = ref(false);
 let originalPositions = new Map<string, THREE.Vector3>();
 let baseDirections = new Map<string, THREE.Vector3>();
+let customExplodeOffsets = new Map<string, { x: number; y: number; z: number }>();
 let modelSize = 1;
 
+// Cache for model lookups to avoid repeated searching
+let modelLookupCache = new Map<string, any>();
 
-const allParts = computed<IObjectMediaSrc[]>(() => {
-  const p: IObjectMediaSrc[] = [];
-  props.models.forEach((m) => {
-    if (Array.isArray(m.obj)) p.push(...m.obj);
-    else if (m.obj) p.push(m.obj);
+// collect all parts (to match file paths with color/opacity)
+const allParts = computed<IModel[]>(() => {
+  const p: IModel[] = [];
+  
+  const collectSrcs = (items: any[]) => {
+    (items || []).forEach((item: any) => {
+      if (item.src) {
+        p.push(item as IModel);
+      }
+
+      if (item.children && Array.isArray(item.children)) {
+        collectSrcs(item.children);
+      }
+    });
+  };
+  
+  (props.models as ICascadeCategory[]).forEach((group) => {
+    collectSrcs(group.children || []);
   });
+  
   return p;
 });
 
-const options = computed(() =>
-  props.models.map((m) => ({
-    label: m.name,
-    value: m.name,
-  }))
-);
-
-const currentModel = computed(() =>
-  props.models.find((m) => m.name === selectedModelName.value)
-);
-
-const filePaths = computed(() => {
-  if (!currentModel.value) {
-    return [];
-  }
+// build cascader options (2 levels: group → part)
+const cascadeOptions = computed(() => {
+  modelLookupCache.clear();
   
-  if (currentModel.value.isGroup) { // group of parts
-    return visibleParts.value;
-  }
-  
-  if (Array.isArray(currentModel.value.obj)) { // multiple versions
-    return selectedVersionSrc.value ? [selectedVersionSrc.value] : [];
-  }
-  
-  const part = currentModel.value.obj; // single part
-  return part.src ? [part.src] : [];
+  const options = (props.models as ICascadeCategory[]).map(group => {
+    modelLookupCache.set(group.key, group);
+    return {
+      label: group.label,
+      value: group.key,
+      children: (group.children || []).map((part: any) => {
+        modelLookupCache.set(part.key, part);
+        return { label: part.label, value: part.key }
+      })
+    }
+  });
+  return options;
 });
 
-watch(() => props.models,
-  (models) => {
-    if (models.length && !selectedModelName.value) {
-      selectedModelName.value = models[0].name;
-    }
-  },
-  { immediate: true }
-);
+const versionData = computed(() => {
+  const none = { versionOptions: [], isGroup: false, children: [], filePaths: [] };
+  if (!selectedPath.value || selectedPath.value.length < 2) {
+    return none;
+  }
 
-watch(currentModel,
-  (newModel) => {
-    if (!newModel) {
-      visibleParts.value = [];
-      selectedVersionSrc.value = null;
-    }
-    else if (newModel.isGroup && Array.isArray(newModel.obj)) { // show all parts
-      visibleParts.value = newModel.obj.map((o) => o.src);
-    } 
-    else if (Array.isArray(newModel.obj)) { // multiple versions
-      visibleParts.value = [];
-      selectedVersionSrc.value = newModel.obj[newModel.obj.length - 1]?.src; //choose last version by default
-    }
-    else { // single part
-      visibleParts.value = [];
-      selectedVersionSrc.value = null;
-    }
+  const [groupKey, partKey] = selectedPath.value;
+  const group = modelLookupCache.get(groupKey);
+  if (!group || !group.children) {
+    return none;
+  }
 
+  const part = group.children.find((p: any) => p.key === partKey);
+  if (!part || !part.children) {
+    return none;
+  }
+
+  const versionOptions = (part.children as any[]).map((v: any) => {
+    const isGroup = !!(v as any).children && (v as any).children.length > 0;
+    const value = (v as any).isGroup || isGroup ? (v.key || v.src) : (v.src || v.key);
+    return {
+      label: v.label,
+      value,
+      isGroup,
+      children: (v as any).children,
+      src: (v as any).src,
+      colorHex: (v as any).colorHex,
+      opacity: (v as any).opacity
+    };
+  });
+
+  const currentVersion = versionOptions.find(v => v.value === selectedVersionSrc.value);
+  const isCurrentGroup = !!(currentVersion && currentVersion.children && currentVersion.children.length > 0);
+  
+  let children: any[] = [];
+  let filePaths: string[] = [];
+  
+  if (selectedVersionSrc.value) {
+    if (selectedVersionSrc.value.includes('/')) {
+      filePaths = [selectedVersionSrc.value];
+    } else if (currentVersion) {
+      if (isCurrentGroup && currentVersion.children) {
+        children = (currentVersion.children as any[]).map((c: any) => ({
+          src: c.src,
+          label: c.label
+        }));
+        filePaths = visibleParts.value.length > 0 ? visibleParts.value : [];
+      } else if (currentVersion.src) {
+        filePaths = [currentVersion.src];
+      }
+    }
+  }
+
+  return { versionOptions, isGroup: isCurrentGroup, children, filePaths };
+});
+
+const versionOptions = computed(() => versionData.value.versionOptions);
+const selectedVersionIsGroup = computed(() => versionData.value.isGroup);
+const currentVersionChildren = computed(() => versionData.value.children);
+const filePaths = computed(() => versionData.value.filePaths);
+
+// Initialize default selection when models are ready
+watch(() => props.models, () => {
+  if (selectedPath.value) return;
+  
+  const models = props.models as ICascadeCategory[];
+  if (!models || models.length === 0) return;
+  
+  // trigger cascadeOptions computation to populate cache
+  void cascadeOptions.value;
+  
+  const firstCat = models[0];
+  const firstChild = firstCat.children && firstCat.children[0];
+  if (firstCat && firstChild) {
+    selectedPath.value = [firstCat.key, (firstChild as any).key];
+    cascaderValue.value = (firstChild as any).key;
+  }
+}, { immediate: true });
+
+// When cascader changes, convert leaf value back to full [group, part] path
+watch(cascaderValue, (leafValue) => {
+  if (!leafValue) {
+    selectedPath.value = null;
+    return;
+  }
+
+  // leafValue is the part key; find which group it belongs to
+  const partKey = Array.isArray(leafValue) ? leafValue[0] : leafValue;
+  
+  // Search for the group that contains this part
+  for (const group of props.models as ICascadeCategory[]) {
+    if (group.children && group.children.find((p: any) => p.key === partKey)) {
+      selectedPath.value = [group.key, partKey];
+      return;
+    }
+  }
+});
+
+// when the cascader path changes, default the version selection
+watch(selectedPath, (path) => {
+  if (!path || path.length < 2) return;
+  
+  // Use versionData directly to get the versions
+  const [groupKey, partKey] = path;
+  const group = modelLookupCache.get(groupKey);
+  if (!group || !group.children) {
+    selectedVersionSrc.value = null;
+    visibleParts.value = [];
     loadModel();
-  },
-  { immediate: true }
-);
+    return;
+  }
+
+  const part = group.children.find((p: any) => p.key === partKey);
+  if (!part || !part.children || part.children.length === 0) {
+    selectedVersionSrc.value = null;
+    visibleParts.value = [];
+    loadModel();
+    return;
+  }
+
+  // Select the last version by default
+  const versions = part.children as any[];
+  const last = versions[versions.length - 1];
+  const isGroup = !!(last.children && last.children.length > 0);
+  const value = isGroup ? (last.key || last.src) : (last.src || last.key);
+  
+  selectedVersionSrc.value = value;
+  if (isGroup && last.children) {
+    visibleParts.value = (last.children as any[]).map((c: any) => c.src);
+  } else {
+    visibleParts.value = [];
+  }
+  loadModel();
+}, { immediate: true });
+
+// when a version is selected in cascade mode, update visibleParts
+watch(selectedVersionSrc, (val) => {
+  if (!val || !selectedPath.value || selectedPath.value.length < 2) {
+    loadModel();
+    return;
+  }
+  
+  const [groupKey, partKey] = selectedPath.value;
+  const group = modelLookupCache.get(groupKey);
+  if (!group || !group.children) {
+    loadModel();
+    return;
+  }
+
+  const part = group.children.find((p: any) => p.key === partKey);
+  if (!part || !part.children) {
+    loadModel();
+    return;
+  }
+
+  const versionObj = part.children.find((v: any) => {
+    const isGroup = !!(v.children && v.children.length > 0);
+    const value = isGroup ? (v.key || v.src) : (v.src || v.key);
+    return value === val;
+  });
+
+  if (versionObj && versionObj.children) {
+    visibleParts.value = (versionObj.children as any[]).map((c: any) => c.src);
+  }
+  loadModel();
+}, { immediate: true });
 
 watch(visibleParts, () => {
-  if (currentModel.value?.isGroup) {
+  // For assembly groups: just toggle mesh visibility instead of reloading
+  if (!selectedVersionIsGroup.value || !currentGroup) {
     loadModel();
+    return;
   }
-});
 
-watch(selectedVersionSrc, () => {
-  if (!currentModel.value?.isGroup) {
-    loadModel();
+  const visibleSet = new Set(visibleParts.value);
+  currentGroup.children.forEach((mesh) => {
+    if (mesh instanceof THREE.Mesh || (mesh instanceof THREE.Object3D && mesh.children.length > 0)) {
+      const src = mesh.userData.src as string;
+      mesh.visible = visibleSet.has(src);
+    }
+  });
+  
+  if (isExploded.value) {
+    reapplyExplosion();
+  }
+}, { deep: true });
+
+
+watch(selectedVersionIsGroup, (isGroup) => {
+  if (!isGroup && isExploded.value) {
+    isExploded.value = false;
+    resetModel();
   }
 });
 
@@ -195,7 +357,10 @@ function initThree() {
 async function loadModel() {
   if (!filePaths.value.length) return;
 
-  const isNewModule = currentModel.value?.name !== currentModuleName;
+  const cascaderChanged = JSON.stringify(previousSelectedPath.value) !== JSON.stringify(selectedPath.value);
+  previousSelectedPath.value = selectedPath.value ? [...selectedPath.value] : null;
+
+  const isNewModule = selectedVersionSrc.value !== currentModuleName;
 
   if (currentGroup) scene.remove(currentGroup);
   currentGroup = new THREE.Group();
@@ -222,37 +387,27 @@ async function loadModel() {
   scene.add(currentGroup);
 
   if (isNewModule) {
-    currentModuleName = currentModel.value?.name ?? null;
+    currentModuleName = selectedVersionSrc.value ?? null;
 
-    if (currentModel.value?.isGroup) {
-      const fullMeshes: THREE.Mesh[] = [];
-      
-      const allModelParts = Array.isArray(currentModel.value?.obj) 
-        ? currentModel.value.obj 
-        : currentModel.value?.obj 
-          ? [currentModel.value.obj] 
-          : [];
-      
-      for (const p of allModelParts) {
-        const isVRML = p.src.toLowerCase().endsWith('.wrl') || p.src.toLowerCase().endsWith('.vrml');
-        
-        if (!isVRML) {
-          const geom = await loadSTL(p.src);
-          const mesh = createMeshWithMaterial(geom, p.src);
-          mesh.position.set(0, 0, 0);
-          mesh.userData.src = p.src;
-          fullMeshes.push(mesh);
-        }
+    // if the selected version is a group, compute explosion vectors from the loaded meshes
+    const v = versionOptions.value.find(v => v.value === selectedVersionSrc.value);
+    if (v && v.isGroup && v.children) {
+      // Filter STL meshes only for explosion calculations
+      const stlMeshes = meshes.filter(m => !(m instanceof THREE.Object3D && m.children.length > 0));
+      if (stlMeshes.length > 0) {
+        const tempGroup = new THREE.Group();
+        stlMeshes.forEach(m => tempGroup.add(m.clone()));
+        tempGroup.updateMatrixWorld(true);
+        computeBaseExplosionVectors(stlMeshes, tempGroup, v.children as any[]);
       }
-
-      const tempGroup = new THREE.Group();
-      fullMeshes.forEach(m => tempGroup.add(m));
-      tempGroup.updateMatrixWorld(true);
-
-      computeBaseExplosionVectors(fullMeshes, tempGroup);
-      fitCameraToModel(tempGroup);
+      
+      if (cascaderChanged) {
+        fitCameraToModel(currentGroup);
+      }
     } else {
-      fitCameraToModel(currentGroup);
+      if (cascaderChanged) {
+        fitCameraToModel(currentGroup);
+      }
     }
   } else {
     controls.update();
@@ -374,10 +529,18 @@ function explodeModel() {
     const key = mesh.userData.src;
     originalPositions.set(key, mesh.position.clone());
 
-    const dir = baseDirections.get(key);
-    if (!dir) return;
-
-    const target = mesh.position.clone().add(dir.clone().multiplyScalar(distance));
+    const customOffset = customExplodeOffsets.get(key);
+    let target: THREE.Vector3;
+    
+    if (customOffset) {
+      // Use custom explode offset if defined
+      target = mesh.position.clone().add(new THREE.Vector3(customOffset.x, customOffset.y, customOffset.z));
+    } else {
+      // Fall back to computed direction-based explosion
+      const dir = baseDirections.get(key);
+      if (!dir) return;
+      target = mesh.position.clone().add(dir.clone().multiplyScalar(distance));
+    }
 
     animateMeshPosition(mesh, target);
   });
@@ -389,16 +552,25 @@ function reapplyExplosion() {
   currentGroup!.children.forEach((mesh) => {
     if (!(mesh instanceof THREE.Mesh)) return;
 
-    const dir = baseDirections.get(mesh.userData.src);
-    if (!dir) return;
-
-    const target = mesh.position.clone().add(dir.clone().multiplyScalar(distance));
+    const key = mesh.userData.src;
+    const customOffset = customExplodeOffsets.get(key);
+    let target: THREE.Vector3;
+    
+    if (customOffset) {
+      target = originalPositions.get(key)!.clone().add(new THREE.Vector3(customOffset.x, customOffset.y, customOffset.z));
+    } else {
+      const dir = baseDirections.get(key);
+      if (!dir) return;
+      target = mesh.position.clone().add(dir.clone().multiplyScalar(distance));
+    }
+    
     mesh.position.copy(target);
   });
 }
 
-function computeBaseExplosionVectors(meshes: THREE.Mesh[], referenceGroup: THREE.Group) {
+function computeBaseExplosionVectors(meshes: THREE.Mesh[], referenceGroup: THREE.Group, parts?: any[]) {
   baseDirections.clear();
+  customExplodeOffsets.clear();
 
   const box = new THREE.Box3().setFromObject(referenceGroup);
   const centerWorld = box.getCenter(new THREE.Vector3());
@@ -420,6 +592,13 @@ function computeBaseExplosionVectors(meshes: THREE.Mesh[], referenceGroup: THREE
     }
 
     baseDirections.set(mesh.userData.src, dir);
+    
+    if (parts) {
+      const partData = parts.find((p: any) => p.src === mesh.userData.src) as IModel | undefined;
+      if (partData?.explodeOffset) {
+        customExplodeOffsets.set(mesh.userData.src, partData.explodeOffset);
+      }
+    }
   }
 }
 
