@@ -4,16 +4,19 @@ export interface IMedia {
   poster?: string;
 }
 
-export interface IObjectMedia {
-  obj: IObjectMediaSrc | IObjectMediaSrc[];
-  isGroup?: boolean;
-  name: string;
-}
-
-export interface IObjectMediaSrc {
+export interface IModel {
+  label_: string;
+  key: string;
   src: string;
   mtl?: string;
-  name?: string;
   colorHex?: string;
   opacity?: number;
+  explodeOffset?: { x: number; y: number; z: number };
+}
+
+export interface ICascadeCategory {
+  label: string;
+  key: string;
+  children?: Array<ICascadeCategory | IModel>;
+  isGroup?: boolean;
 }

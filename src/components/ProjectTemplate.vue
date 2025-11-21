@@ -29,8 +29,8 @@
         <ModelViewer
           ref="viewer"
           :models="models"
-          :backgroundColor="0x1a1a1a"
-        />
+          />
+          <!-- :backgroundColor="0x1a1a1a" -->
       </div>
     </template>
   </div>
@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { IMedia, IObjectMedia } from '../models/media';
+import { IMedia, IObjectMedia, ICascadeCategory } from '../models/media';
 import { formatMonthYear } from '../utils/date';
 import MediaCarousel from './MediaCarousel.vue';
 import ModelViewer from './ModelViewer.vue';
@@ -48,7 +48,7 @@ import { getProjectByRouteName, Project } from '../data/projects';
 interface Props {
   id: string;
   media?: IMedia[];
-  models?: IObjectMedia[];
+  models?: ICascadeCategory[];
 }
 
 const props = withDefaults(defineProps<Props>(), {

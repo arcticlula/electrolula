@@ -48,7 +48,7 @@
 import { ref } from 'vue';
 
 import ProjectTemplate from '../../components/ProjectTemplate.vue';
-import { IMedia, IObjectMedia } from '../../models/media';
+import { IMedia, ICascadeCategory } from '../../models/media';
 
 const media = ref<IMedia[]>([
   {
@@ -79,108 +79,65 @@ const media = ref<IMedia[]>([
   }
 ]);
 
-  const models = ref<IObjectMedia[]>([
+const models = ref<ICascadeCategory[]>([{
+  key: 'parts',
+  label: 'Parts',
+  children: [
     {
-      name: 'Bottom',
-      obj: [ 
-      {
-        name: '0.2',
-        src: 'mood-light/models/lamp-holder-v0.2.stl',
-        colorHex: '0xff7f00'
-      }, 
-      {
-        name: '0.5',
-        src: 'mood-light/models/lamp-bottom-v0.5.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '0.9',
-        src: 'mood-light/models/lamp-bottom-v0.9.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '0.95',
-        src: 'mood-light/models/lamp-bottom-v0.95.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '0.96',
-        src: 'mood-light/models/lamp-bottom-v0.96.stl',
-        colorHex: '0xff7f00'
-      }]
+      key: 'bottom',
+      label: 'Bottom',
+      children: [
+        { key: 'bottom-v0.2', label: '0.2', src: 'mood-light/models/lamp-holder-v0.2.stl', colorHex: '0xff7f00' },
+        { key: 'bottom-v0.5', label: '0.5', src: 'mood-light/models/lamp-bottom-v0.5.stl', colorHex: '0xff7f00' },
+        { key: 'bottom-v0.9', label: '0.9', src: 'mood-light/models/lamp-bottom-v0.9.stl', colorHex: '0xff7f00' },
+        { key: 'bottom-v0.95', label: '0.95', src: 'mood-light/models/lamp-bottom-v0.95.stl', colorHex: '0xff7f00' },
+        { key: 'bottom-v0.96', label: '0.96', src: 'mood-light/models/lamp-bottom-v0.96.stl', colorHex: '0xff7f00' }
+      ]
     },
     {
-      name: 'Side',
-      obj: [ {
-        name: '0.5',
-        src: 'mood-light/models/lamp-side-v0.5.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '0.9',
-        src: 'mood-light/models/lamp-side-v0.9.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '0.95',
-        src: 'mood-light/models/lamp-side-v0.95.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: '0.96',
-        src: 'mood-light/models/lamp-side-v0.96.stl',
-        colorHex: '0xff7f00'
-      },      
-      {
-        name: '0.97',
-        src: 'mood-light/models/lamp-side-v0.97.stl',
-        colorHex: '0xff7f00'
-      }]
+      key: 'side',
+      label: 'Side',
+      children: [
+        { key: 'side-v0.5', label: '0.5', src: 'mood-light/models/lamp-side-v0.5.stl', colorHex: '0xff7f00' },
+        { key: 'side-v0.9', label: '0.9', src: 'mood-light/models/lamp-side-v0.9.stl', colorHex: '0xff7f00' },
+        { key: 'side-v0.95', label: '0.95', src: 'mood-light/models/lamp-side-v0.95.stl', colorHex: '0xff7f00' },
+        { key: 'side-v0.96', label: '0.96', src: 'mood-light/models/lamp-side-v0.96.stl', colorHex: '0xff7f00' },
+        { key: 'side-v0.97', label: '0.97', src: 'mood-light/models/lamp-side-v0.97.stl', colorHex: '0xff7f00' }
+      ]
     },
     {
-      name: 'Tab',
-      obj: {
-        name: '0.1',
-        src: 'mood-light/models/lamp-tab-v0.1.stl',
-        colorHex: '0xff7f00'
-      },
-    },
-    {
-      name: 'Assembly',
-      isGroup: true,
-      obj: [ {
-        name: 'Bottom',
-        src: 'mood-light/models/assembly/lamp-bottom-v1.0.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'Left',
-        src: 'mood-light/models/assembly/lamp-left-v1.0.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'Right',
-        src: 'mood-light/models/assembly/lamp-right-v1.0.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'Top',
-        src: 'mood-light/models/assembly/lamp-top-v1.0.stl',
-        colorHex: '0xff7f00'
-      },
-      {
-        name: 'Screen',
-        src: 'mood-light/models/assembly/lamp-screen-v1.0.stl',
-        colorHex: '0xeeeeee',
-        opacity: 0.9
-      },
-      {
-        name: 'Tab',
-        src: 'mood-light/models/assembly/lamp-tab-v1.0.stl',
-        colorHex: '0x00ff00'
-      }],
+      key: 'tab',
+      label: 'Tab',
+      children: [
+        { key: 'tab-v0.1', label: '0.1', src: 'mood-light/models/lamp-tab-v0.1.stl', colorHex: '0xff7f00' }
+      ]
     }
-  ]);
+  ]}, 
+{
+  key: 'assembly',
+  label: 'Assembly',
+  children: [
+    {
+      key: 'assembly-v1.0',
+      label: 'V1.0',
+      children: [
+        {
+          key: 'assembly-v1.0-models',
+          label: 'v1.0',
+          isGroup: true,
+          children: [
+            { key: 'assembly-bottom', label: 'Bottom', src: 'mood-light/models/assembly/lamp-bottom-v1.0.stl', colorHex: '0xff7f00' },
+            { key: 'assembly-left', label: 'Left', src: 'mood-light/models/assembly/lamp-left-v1.0.stl', colorHex: '0xff7f00' },
+            { key: 'assembly-right', label: 'Right', src: 'mood-light/models/assembly/lamp-right-v1.0.stl', colorHex: '0xff7f00' },
+            { key: 'assembly-top', label: 'Top', src: 'mood-light/models/assembly/lamp-top-v1.0.stl', colorHex: '0xff7f00' },
+            { key: 'assembly-screen', label: 'Screen', src: 'mood-light/models/assembly/lamp-screen-v1.0.stl', colorHex: '0xeeeeee', opacity: 0.9 },
+            { key: 'assembly-tab', label: 'Tab', src: 'mood-light/models/assembly/lamp-tab-v1.0.stl', colorHex: '0x00ff00' }
+          ]
+        }
+      ]
+    }
+  ]
+}]);
 </script>
 
 <style scoped lang="sass">
